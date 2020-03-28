@@ -31,12 +31,41 @@ module.exports = {
   module:{
     rules:[
       {
-        test:/.vue$/,
+        test:/\.vue$/,
         loader:'vue-loader'
       },
       {
-        test:/.css$/,
+        test:/\.css$/,
         use:['style-loader','css-loader']
+      },
+      {
+        test:/\.(jpg|png|gif)$/,    //找到三种格式中的任意一种
+        // use:['file-loader']
+        use:[
+          {
+              loader:'url-loader',    //把图片转成base64
+              options:{
+                  limit:50*1024,  //小于50k就会转成base64
+                  outputPath: 'images'
+              }
+          }
+        ]
+      },
+      {
+        test:/\.js$/,
+        use:[
+            {
+                loader:'babel-loader',
+                options:{   //env针对的是ES的版本，它会自动选择。react针对的就是react
+                  "presets": ["@babel/preset-env","@babel/preset-react"],
+                  "plugins": ["@babel/plugin-transform-runtime"],
+                },
+            
+            }
+        ],
+       
+        exclude: /node_modules/,  //不去检查node_modules里的内容，那里的js太多了，会非常慢
+        // include:path.resolve(__dirname,'src/js'),   //直接规定查找的范围
       }
     ]
   }
