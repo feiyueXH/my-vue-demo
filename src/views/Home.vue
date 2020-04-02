@@ -38,5 +38,8 @@ export default {
 }
 </script>
 <style scoped>
-
+  .home-container{
+    background: #ffffff;
+    display: inline;
+  }
 </style>
