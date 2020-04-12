@@ -1,18 +1,19 @@
 const path = require("path");
+const resolve = dir => path.resolve(__dirname, dir);
 const VueLoaderPlugin =  require('vue-loader/lib/plugin');//. Vue-loader在15.*之后的版本都是 vue-loader的使用都是需要伴生 VueLoaderPlugin的,
 const {CleanWebpackPlugin}=require('clean-webpack-plugin');//自动清除文件插件
 const HtmlWebpackPlugin=require('html-webpack-plugin');//生成html插件
-// const MiniCssExtractPlugin=require("mini-css-extract-plugin");//抽离css代码插件
-const ExtractTextPlugin = require("extract-text-webpack-plugin");//抽离css代码插件
-const HtmlWebpackInlineSourcePlugin  = require('html-webpack-inline-source-plugin');//将内联css代码嵌套到html里面,减少请求数量
+const MiniCssExtractPlugin=require("mini-css-extract-plugin");//抽离css代码插件
+
 module.exports = {
   entry:{//入口
-    index:"./src/index.js"
+    index:"./src/main.js"
   },
 
   output:{//输出
     path:path.resolve(__dirname,"dist"),//输出文件的文件夹
-    filename:"[name].js"//定义输出文件的名称
+    filename:"[name].js",//定义输出文件的名称
+    chunkFilename: "js/[name].js"
   },
 
   plugins:[
@@ -20,16 +21,13 @@ module.exports = {
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       template: 'index.html',
-      filename: 'index-[hash].html',
-      inject: 'head',
-      inlineSource: '.(js|css)'
+      filename: 'index.html',
+      inject: 'body',
     }),
-    new HtmlWebpackInlineSourcePlugin(),
-    new ExtractTextPlugin({filename: 'css/[name].[hash:5].css', allChunks: true}),
-  
-    // new MiniCssExtractPlugin({
-    //   filename:'css/index.css'    //文件目录会放入output.path里
-    // })
+    new MiniCssExtractPlugin({
+      filename:'[name].css',    //文件目录会放入output.path里
+      chunkFilename: "css/[name].css"
+    })
   ],
 
   devServer:{
@@ -42,29 +40,22 @@ module.exports = {
     rules:[
       {
         test:/\.vue$/,
-        loader:'vue-loader',
-        options: {loaders:{
-          css: ExtractTextPlugin.extract({
-              use: 'css-loader',
-              fallback: 'vue-style-loader'
-          })
-      }}
+        loader:'vue-loader'
       },
-      // {
-      //   test:/\.css$/,
-      //   use:['style-loader','css-loader']
-      // },
-      {     //处理js中引入的css
+      {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract({
-            use: [
-                {
-                    loader: 'css-loader'
+        use: [
+            // 要加上style-loader才能正确解析.vue文件里的<style>标签内容
+            MiniCssExtractPlugin.loader,
+            {
+                loader: 'css-loader',
+                options: {
+                    importLoaders: 1
                 }
-            ]
-        })
+            },
+            'postcss-loader'
+        ]
       },
-    
       {
         test:/\.(jpg|png|gif)$/,    //找到三种格式中的任意一种
         // use:['file-loader']
@@ -92,8 +83,20 @@ module.exports = {
         ],
        
         exclude: /node_modules/,  //不去检查node_modules里的内容，那里的js太多了，会非常慢
-        // include:path.resolve(__dirname,'src/js'),   //直接规定查找的范围
+        // include:path.resolve(__dirname,'src/js'),   //直接规定 查找的范围
+      },
+
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+        loader: 'file-loader'
       }
-    ]
+    ],
+  },
+
+  resolve: {
+    extensions:['.js','.vue','.json'],
+    alias: {
+        "@": resolve('src')
+    }
   }
 }
