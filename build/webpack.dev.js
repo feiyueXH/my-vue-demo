@@ -11,14 +11,18 @@ const devConfig = {
     port: "1573",  //端口
     open: true,  //自动打开页面
     hot: true, //开启热更新
-    // proxy: {//启用代理
-    //   '/api:': 'http://localhost:3000'
-    // }
+    proxy: {//启用代理
+      '/api/v1/**': {
+        target: 'https://cnodejs.org/',
+        secure: false,
+        changeOrigin: false,
+      },
+    }
   },
 
   plugins: [
     new webpack.HotModuleReplacementPlugin()    //引入热更新插件
-  ],
+  ],  
 }
 
 module.exports = merge(baseConfig, devConfig);
