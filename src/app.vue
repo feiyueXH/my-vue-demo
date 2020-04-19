@@ -5,14 +5,14 @@
 </template>
 <script>
 export default {
-  data() {
-    return {};
+  data () {
+    return {}
   },
 
-  mounted() {
-    this.$router.replace({ path: "login" });
+  mounted () {
+    this.$router.replace({ path: 'login' })
   }
-};
+}
 </script>
 <style scoped>
 .page-container {
