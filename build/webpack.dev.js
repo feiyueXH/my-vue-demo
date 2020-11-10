@@ -7,12 +7,12 @@ const devConfig = {
   devtool: 'cheap-module-eval-source-map',
 
   devServer: {
-    host: 'localhost', //服务器的ip地址
-    port: '1573', //端口
-    open: true, //自动打开页面
-    hot: true, //开启热更新
+    host: 'localhost', // 服务器的ip地址
+    port: '1573', // 端口
+    open: true, // 自动打开页面
+    hot: true, // 开启热更新
     proxy: {
-      //启用代理
+      // 启用代理
       '/api/v1/**': {
         target: 'https://cnodejs.org/',
         secure: false,
@@ -22,7 +22,7 @@ const devConfig = {
   },
 
   plugins: [
-    new webpack.HotModuleReplacementPlugin() //引入热更新插件
+    new webpack.HotModuleReplacementPlugin() // 引入热更新插件
   ]
 }
 

@@ -3,16 +3,39 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
-    count: 0
+    isLogin: false,
+    initedApp: false,
+    menuList: []
   },
   mutations: {
-    changeCount() {
-      this.state.count++
-      console.log(this.state.count)
+    login(state) {
+      state.isLogin = true
+    },
+    setMenuList(state, menus) {
+      state.menuList = menus
+      state.initedApp = true
     }
   },
-  actions: {},
-  modules: {}
+  actions: {
+    loginByUserName({ commit }, userinfo) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          commit('login')
+          resolve()
+        }, 1000)
+      })
+    },
+    setAccessMenuList({ commit }, menus) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          commit('setMenuList', menus)
+          resolve()
+        }, 1000)
+      })
+    }
+  }
 })
+
+export default store
